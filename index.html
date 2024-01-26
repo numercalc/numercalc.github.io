@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html manifest="app.manifest"> 
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Калькулятор нумерологии</title>
+<meta name="apple-mobile-web-app-title" content="Калькулятор нумерологии">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<!--<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />-->
+<!--<link rel="stylesheet" href="all.css">-->
+<link rel="apple-touch-icon" href="res/icon.png">
+<style type="text/css">
+html,body{padding:0;margin:0;}
+body{font-family: Arial, sans-serif; font-size:16px; background-color:#f7f7f7; -webkit-user-select:none; -webkit-tap-highlight-color:transparent;}
+a{text-decoration:none; color:gray;}
+#wrapper{position:absolute; width:100%; height:100%;}
+
+#panel{position:absolute; display:flex; flex-direction:row; font-size:19px; justify-content:space-between; align-items:center; width:inherit; height:45px; overflow:hidden; background-color:#636468; color:white; text-align:center; cursor:default;}
+#panel-bg{width:inherit; height:45px;}
+#panel #btn{width:45px; height:45px; cursor:pointer; background-color:#636468; display:flex; justify-content:center; align-items:center;}
+#panel #btn img{width:25px; height:25px;}
+#panel #btn:hover{opacity:0.7;}
+#panel .title{font-weight:500px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+
+#list,#list2,#list3,#list4{width:100%; height:calc(100%); overflow-y:auto; -webkit-overflow-scrolling:touch; }
+#list3,#list4{text-align:center;}
+
+input[type=text]{width:calc(100% - 20px); margin-bottom:10px; background-color:#e8e8e8; border:1px solid #bcbcbc; outline:none; padding:10px; border-radius:10px; font-size:16px;}
+
+#content{margin:10px auto; width:calc(100% - 20px); magin:0 auto;}
+#content #title{margin:10px; text-align:center; font-size:18px;}
+#content #btn{width:100%; margin:5px auto; text-align:center; background-color:#03a89a; color:white; padding:12px 0; border-radius:10px;}
+#content #btn:active{background-color:#00867b;}
+
+#items{margin:10px auto; width:calc(100% - 20px); font-size:14px; border:1px solid #dadada; background-color:#eeeeee; oveflow:hidden;}
+#list #items #item{display:flex; flex-direction:row; justify-content:space-between; align-items:center; cursor:pointer; height:44px; border-bottom:1px solid #dfdfdf; overflow:hidden;}
+#list #items #item:hover{background-color:#ededed;}
+#list #items #item #title{margin-left:8px; margin-right:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+#list #items #item #index{margin-right:10px; margin-left:4px; color:#454545; font-size:13px; white-space:nowrap; text-align:right; font-weight:bold;}
+#list #items #item:last-child{border-bottom:0;}
+
+#list2, #list3, #list4{display:none;}
+
+#image{display:flex; justify-content:center; margin-bottom:15px; border:1px solid #dadada; background-color:white;}
+#image img{max-height:175px; max-width:100%;}
+</style>
+<script type="text/javascript">
+let HaldItems = [];
+HaldItems.push([1, 'честолюбие, жадность, грубость']);
+HaldItems.push([2, 'разрушение, гибельное последствие']);
+HaldItems.push([3, 'религиозность, стремление к лучшему']);
+HaldItems.push([4, 'власть, ум']);
+HaldItems.push([5, 'храбрость, честность, благополучие']);
+HaldItems.push([6, 'труд, свободолюбие, успех']);
+HaldItems.push([7, 'бедность, преступление, недалекость']);
+HaldItems.push([8, 'величие, кротость']);
+HaldItems.push([9, 'мудрость, почет']);
+HaldItems.push([10, 'добродушие, красота души']);
+HaldItems.push([11, 'вздорность']);
+HaldItems.push([12, 'безбожие']);
+HaldItems.push([13, 'бессмертие']);
+HaldItems.push([14, 'порок']);
+HaldItems.push([15, 'проницательность, вера в Бога']);
+HaldItems.push([16, 'благополучие, любовь, семья']);
+HaldItems.push([17, 'порочность, зло']);
+HaldItems.push([18, 'сила воли']);
+HaldItems.push([19, 'бесхарактерность, робость']);
+HaldItems.push([20, 'печаль, строгость, неуспех']);
+HaldItems.push([21, 'любовь к ближним']);
+HaldItems.push([22, 'мудрость, глубина']);
+HaldItems.push([23, 'Бич Божий, наказание']);
+HaldItems.push([24, 'добродетель']);
+HaldItems.push([25, 'слава']);
+HaldItems.push([26, 'добро']);
+HaldItems.push([27, 'сила воли']);
+HaldItems.push([28, 'удача в любви, богатство']);
+HaldItems.push([29, 'злой замысел, ничтожество']);
+HaldItems.push([30, 'удачный брак']);
+HaldItems.push([31, 'справедливость']);
+HaldItems.push([32, 'верность, чистота души']);
+HaldItems.push([33, 'величие, красота']);
+HaldItems.push([34, 'болезнь души, страдание']);
+HaldItems.push([35, 'стремление к высшему']);
+HaldItems.push([36, 'величие души']);
+HaldItems.push([37, 'кротость, семейное счастье']);
+HaldItems.push([38, 'несовершенство']);
+HaldItems.push([39, 'бедность, слабость ума']);
+HaldItems.push([40, 'настойчивость']);
+HaldItems.push([41, 'печаль, неуспех']);
+HaldItems.push([42, 'путешествие']);
+HaldItems.push([43, 'недалекость']);
+HaldItems.push([44, 'величие, успех']);
+HaldItems.push([45, 'потеря здоровья']);
+HaldItems.push([46, 'богатство']);
+HaldItems.push([47, 'долголетие']);
+HaldItems.push([48, 'приговор']);
+HaldItems.push([49, 'корыстность']);
+HaldItems.push([50, 'забвение, свобода']);
+HaldItems.push([60, 'одиночество, потеря лучшего']);
+HaldItems.push([70, 'наука, светлость ума']);
+HaldItems.push([73, 'стремление к наукам']);
+HaldItems.push([75, 'способность']);
+HaldItems.push([77, 'раскаяние, прощение']);
+HaldItems.push([80, 'великое несчастье']);
+HaldItems.push([87, 'верование']);
+HaldItems.push([90, 'заблуждение, неудача']);
+
+let PifItems = [];
+PifItems.push([1, 'Импульс, страсть, амбиции, намерение']);
+PifItems.push([2, 'Переход из одного состояния в другое, рок, разрушение']);
+PifItems.push([3, 'Религия, вера, судьба']);
+PifItems.push([4, 'Твердость, сила, власть']);
+PifItems.push([5, 'Брак, удовольствие, радость, счастье']);
+PifItems.push([6, 'Совершенство в работе']);
+PifItems.push([7, 'Отдых, счастье, равновесие, свобода']);
+PifItems.push([8, 'Защита, справедливость']);
+PifItems.push([9, 'Печаль, тревога, увечность, несовершенство']);
+PifItems.push([10, 'Разум, успех, вдохновение']);
+PifItems.push([11, 'Несогласие, обида, обман, наказание']);
+PifItems.push([12, 'Счастливое предзнаменование, город']);
+PifItems.push([13, 'Злобность, неправильность']);
+PifItems.push([14, 'Жертва, потеря']);
+PifItems.push([15, 'Достоинство, культура, целостность, благо']);
+PifItems.push([16, 'Роскошь, чувственность, удача']);
+PifItems.push([17, 'Неудача, пренебрежение, забвение']);
+PifItems.push([18, 'Несчастье, трудности, тирания']);
+PifItems.push([19, 'Глупость, безумие']);
+PifItems.push([20, 'Мудрость, суровость, меланхолия']);
+PifItems.push([21, 'Тайна, плодовитость, производительность']);
+PifItems.push([22, 'Взыскание, наказание, боль']);
+PifItems.push([23, 'Восстание, фанатизм, предрассудок']);
+PifItems.push([24, 'Путешествие, изгнание, непоследовательность']);
+PifItems.push([25, 'Разумность, результат']);
+PifItems.push([26, 'Благожелательность, благотворительность']);
+PifItems.push([27, 'Храбрость, героизм, дерзость']);
+PifItems.push([28, 'Памятные дары, приметы, знаки']);
+PifItems.push([29, 'Новости, хроника']);
+PifItems.push([30, 'Брак, известность, празднование']);
+PifItems.push([31, 'Благо, вдохновение, публичность']);
+PifItems.push([32, 'Брак, осуществление брачных отношений']);
+PifItems.push([33, 'Мягкость, достоинство, благодарность']);
+PifItems.push([34, 'Страдание, возмездие, наказание']);
+PifItems.push([35, 'Здоровье, мир, достаток']);
+PifItems.push([36, 'Интуиция, гений']);
+PifItems.push([37, 'Верность, семейные радости']);
+PifItems.push([38, 'Злоба, жадность, порочность']);
+PifItems.push([39, 'Восхваление, честь']);
+PifItems.push([40, 'Свадьба, пирушка, праздник']);
+PifItems.push([41, 'Неблагодарность, скандал, оскорбление']);
+PifItems.push([42, 'Короткая жизнь, потеря']);
+PifItems.push([43, 'Богослужение, религия, храм']);
+PifItems.push([44, 'Подъем, царствование, овации, волшебство']);
+PifItems.push([45, 'Потомство, население']);
+PifItems.push([46, 'Плодовитость, плодотворность']);
+PifItems.push([47, 'Долгая жизнь, счастье']);
+PifItems.push([48, 'Справедливость, решение суда, судья']);
+PifItems.push([49, 'Алчность, скопидомство']);
+PifItems.push([50, 'Свобода, воля, легкость']);
+PifItems.push([60, 'Супружеская утрата']);
+PifItems.push([70, 'Посвящение в тайну, наука, целостность, достоинство']);
+PifItems.push([80, 'Защита, восстановление, выздоровление']);
+PifItems.push([90, 'Огорчение, немилость, ошибка, слепота']);
+
+
+function find(){
+	document.getElementsByClassName('items')[0].style.display = 'none';
+	if (document.getElementById('search').value.trim() == '')
+		return;
+		
+	let Results = [];
+	SearchInput = document.getElementById('search').value.toLowerCase();
+	
+	//let chaldean = document.getElementById('chaldean').checked;
+	
+	let Sum = 0;
+	let Sum2 = 0;
+	for (let i = 0; i < SearchInput.length; i++) {
+	
+		//if (chaldean) {
+		if (SearchInput[i] == 'a' || SearchInput[i] == 'i' || SearchInput[i] == 'j' || SearchInput[i] == 'q' || SearchInput[i] == 'y')
+			Sum += 1;
+		if (SearchInput[i] == 'b' || SearchInput[i] == 'k' || SearchInput[i] == 'r')
+			Sum += 2;
+		if (SearchInput[i] == 'c' || SearchInput[i] == 'g' || SearchInput[i] == 'l' || SearchInput[i] == 's')
+			Sum += 3;
+		if (SearchInput[i] == 'd' || SearchInput[i] == 'm' || SearchInput[i] == 't')
+			Sum += 4;
+		if (SearchInput[i] == 'e' || SearchInput[i] == 'h' || SearchInput[i] == 'n' || SearchInput[i] == 'x')
+			Sum += 5;
+		if (SearchInput[i] == 'u' || SearchInput[i] == 'v' || SearchInput[i] == 'w')
+			Sum += 6;
+		if (SearchInput[i] == 'o' || SearchInput[i] == 'z')
+			Sum += 7;
+		if (SearchInput[i] == 'f' || SearchInput[i] == 'p')
+			Sum += 8;
+		//} else {
+		if (SearchInput[i] == 'a' || SearchInput[i] == 'j' || SearchInput[i] == 's')
+			Sum2 += 1;
+		if (SearchInput[i] == 'b' || SearchInput[i] == 'k' || SearchInput[i] == 't')
+			Sum2 += 2;
+		if (SearchInput[i] == 'c' || SearchInput[i] == 'l' || SearchInput[i] == 'u')
+			Sum2 += 3;
+		if (SearchInput[i] == 'd' || SearchInput[i] == 'm' || SearchInput[i] == 'v')
+			Sum2 += 4;
+		if (SearchInput[i] == 'e' || SearchInput[i] == 'n' || SearchInput[i] == 'w')
+			Sum2 += 5;
+		if (SearchInput[i] == 'f' || SearchInput[i] == 'o' || SearchInput[i] == 'x')
+			Sum2 += 6;
+		if (SearchInput[i] == 'g' || SearchInput[i] == 'p' || SearchInput[i] == 'y')
+			Sum2 += 7;
+		if (SearchInput[i] == 'h' || SearchInput[i] == 'q' || SearchInput[i] == 'z')
+			Sum2 += 8;
+		if (SearchInput[i] == 'u' || SearchInput[i] == 'r')
+			Sum2 += 9;
+		//}
+	}
+
+	/*document.getElementsByClassName('items')[0].innerHTML = '';
+	for (let i = 0; i < Results.length; i++) {
+		document.getElementsByClassName('items')[0].innerHTML += '<div id="item" onclick="showItem(' + Results[i][0] + ')"><div id="title">' + Items[Results[i][0]][1] + '</div></div>';
+	}*/
+	
+	document.getElementsByClassName('main-content')[0].style.display = 'block';
+	//if (Results.length > 0 && SearchInput.trim() != '')
+	//	document.getElementsByClassName('items')[0].style.display = 'block';
+	//else
+	
+	let Sum3 = 0;
+	let SumStr = Sum + '';
+	for (let i = 0; i < SumStr.length; i++) {
+		Sum3 += parseInt(SumStr[i]);
+	}
+	document.getElementsByClassName('main-title')[0].innerHTML = '<b>Халдейская система</b><br>Сумма: ' + Sum + '<br>Ваше число: ' + Sum2;
+	
+	// Халдейская система - поиск описания
+	let FoundItem = false;
+	let ItemDescr = '';
+	for (let i = 0; i < HaldItems.length; i++)
+		if (HaldItems[i][0] == Sum) { ItemDescr = HaldItems[i][1]; FoundItem = true; break; }
+		
+	if (FoundItem == false) {
+		let Num1 = Sum - Sum % 10;
+		let Num2 = Sum % 10;
+		let DescrList = [];
+		for (let i = 0; i < HaldItems.length; i++)
+			if (HaldItems[i][0] == Num1 || HaldItems[i][0] == Num2) DescrList.push(HaldItems[i][1]);
+		ItemDescr = DescrList.join(', ');
+	}
+	
+	document.getElementsByClassName('main-title')[0].innerHTML += '<br>Описание: ' + ItemDescr;	
+	
+	let Sum4 = 0;
+	SumStr = '';
+	SumStr = Sum2 + '';
+	for (let i = 0; i < SumStr.length; i++) {
+		Sum4 += parseInt(SumStr[i]);
+	}
+	
+	document.getElementsByClassName('main-title')[0].innerHTML += '<br><br><b>Пифагорей система</b><br>Сумма: ' + Sum2 + '<br>Ваше число: ' + Sum4;
+
+	// Пифагорская система - поиск описания
+	FoundItem = false;
+	ItemDescr = '';
+	for (let i = 0; i < PifItems.length; i++)
+		if (PifItems[i][0] == Sum2) { ItemDescr = PifItems[i][1]; FoundItem = true; break; }
+		
+	if (FoundItem == false) {
+		let Num1 = Sum2 - Sum2 % 10;
+		let Num2 = Sum2 % 10;
+		let DescrList = [];
+		for (let i = 0; i < PifItems.length; i++)
+			if (PifItems[i][0] == Num1 || PifItems[i][0] == Num2) DescrList.push(PifItems[i][1]);
+		ItemDescr = DescrList.join(', ');
+	}
+	document.getElementsByClassName('main-title')[0].innerHTML += '<br>Описание: ' + ItemDescr;	
+	
+}
+
+function backToMain() {
+	document.getElementById('list3').style.display = 'none';
+	document.getElementById('list2').style.display = 'none';
+	document.getElementById('list').style.display = 'block';
+}
+
+function goToCategory() {
+	document.getElementById('list4').style.display = 'none';
+	document.getElementById('list').style.display = 'none';
+	document.getElementById('list3').style.display = 'block';
+}
+
+//Инициализация
+document.addEventListener('DOMContentLoaded', function(){
+	document.getElementsByClassName('items')[0].style.display = 'none';
+	document.getElementsByClassName('main-content')[0].style.display = 'none';
+});
+</script>
+</head>
+<body>
+<div id="wrapper">
+	<div id="list">
+		<div id="panel">
+			<div id="btn" style="visibility:hidden" onclick="goToCategory()"><img src="images/list.png" /></div>
+			<div class="title">Калькулятор нумерологии</div>
+			<div id="btn" style="visibility:hidden"><img src="images/back.png" /></div>			
+		</div>
+		<div id="panel-bg"></div>
+		
+		<div id="content">
+			<input type="text" id="search" placeholder="Введите имя"/>
+			<div id="btn" onclick="find()">Посчитать</div>
+		</div><br>
+		<div id="content" class="main-content">
+			<div id="title" class="main-title">-</div>
+		</div>
+		<div id="items" class="items">
+			<div id="item" onclick="showItem(1)"><div id="title">-</div></div>
+		</div>
+	</div>
+	
+	<div id="list2">
+		<div id="panel">
+			<div id="btn" onclick="backToMain()"><img src="images/back.png" /></div>
+			<div class="title">-</div>
+			<div id="btn" style="visibility:hidden"><img src="images/back.png" /></div>			
+		</div>
+		<div id="panel-bg"></div>
+		
+		<div id="content">
+			<div id="title" class="sub-title">Name</div>
+			<div id="image"><img src="" id="photo" /></div>
+
+		</div>
+	</div>
+	
+	<div id="list3">
+		<div id="panel">
+			<div id="btn" onclick="backToMain()"><img src="images/back.png" /></div>
+			<div class="title">1</div>
+			<div id="btn" style="visibility:hidden"><img src="images/back.png" /></div>			
+		</div>
+		<div id="panel-bg"></div>
+		
+		<div id="content" class="main-content">
+
+		</div>
+	</div>
+	
+	<div id="list4">
+		<div id="panel">
+			<div id="btn" onclick="goToCategory()"><img src="images/back.png" /></div>
+			<div class="title" id="sub-title2">NAME</div>
+			<div id="btn" style="visibility:hidden"><img src="images/back.png" /></div>			
+		</div>
+		<div id="panel-bg"></div>
+		
+		<div id="list">
+			<div id="items" class="items2">
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>
